@@ -34,3 +34,7 @@ class AdminCustomUser(UserAdmin):
     )
 admin.site.register(CustomUser, AdminCustomUser)
 admin.site.register(CodeVerification)
+
+
+admin.site.register(MedicalTest)
+admin.site.register(Bouquet)

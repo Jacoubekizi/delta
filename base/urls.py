@@ -14,4 +14,8 @@ urlpatterns = [
     path('setting/list-info-user/<str:pk>/', ListInformationUserView.as_view()),
     path('setting/update-image/<str:pk>/',UpdateImageUserView.as_view()),
 
+    path('list-create-bouquets/',ListCreateBouquetsView.as_view()),
+    path('list-create-medical-tests/',ListCreateMedicalTestsView.as_view()),
+    path('get-bouquet/<str:pk>/',GetBouquetsView.as_view()),
+
 ]    

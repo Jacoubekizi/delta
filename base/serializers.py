@@ -93,3 +93,16 @@ class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['id', 'email', 'username', 'image']
+
+# Handel Seriailzer For List Information Medical Tests
+class MedicalTestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MedicalTest
+        fields = ['test_name']
+
+# Handel Seriailzer For List Information Bouquets
+class BouquetsSerializer(serializers.ModelSerializer):
+    medical_test = MedicalTestSerializer(read_only=True, many=True)
+    class Meta:
+        model = Bouquet
+        fields = ['bouquet_name', 'price', 'descreption', 'image', 'medical_test']

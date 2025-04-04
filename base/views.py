@@ -175,3 +175,19 @@ class ListInformationUserView(RetrieveAPIView):
     permission_classes = [IsAuthenticated,]
     queryset = CustomUser.objects.all()
     serializer_class= CustomUserSerializer
+
+class ListCreateBouquetsView(ListCreateAPIView):
+    permission_classes = [IsAuthenticated,]
+    queryset = Bouquet.objects.all()
+    serializer_class = BouquetsSerializer
+
+class ListCreateMedicalTestsView(ListCreateAPIView):
+    permission_classes = [IsAuthenticated,]
+    queryset = MedicalTest.objects.all()
+    serializer_class = MedicalTestSerializer
+
+
+class GetBouquetsView(RetrieveAPIView):
+    permission_classes = [IsAuthenticated,]
+    queryset = Bouquet.objects.all()
+    serializer_class = BouquetsSerializer

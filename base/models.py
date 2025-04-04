@@ -29,4 +29,20 @@ class CodeVerification(models.Model):
 
     def __str__(self):
         return f'{self.user.username} code:{self.code}'
+class MedicalTest(models.Model):
+    test_name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.test_name
+
+
+class Bouquet(models.Model):
+    bouquet_name = models.CharField(max_length=50)
+    price = models.DecimalField(max_digits=5, decimal_places=2)
+    descreption = models.CharField(max_length=2000)
+    image = models.ImageField(upload_to='images/Bouquets', null=True, blank=True)
+    medical_test = models.ManyToManyField(MedicalTest)
+
+    def __str__(self):
+        return self.bouquet_name
     
