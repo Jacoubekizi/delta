@@ -79,7 +79,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Delta.wsgi.application'
 
-
+CSRF_TRUSTED_ORIGINS = ['https://*.enghala.pythonanywhere.com', 'https://*.127.0.0.1']
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
