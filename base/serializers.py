@@ -106,3 +106,60 @@ class BouquetsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bouquet
         fields = ['bouquet_name', 'price', 'descreption', 'image', 'medical_test']
+
+class CartBouquetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Bouquet
+        fields = ['id', 'bouquet_name', 'price', 'image']
+
+class CartSerializer(serializers.ModelSerializer):
+    bouquets = CartBouquetSerializer(read_only=True, many=True)
+    class Meta:
+        model = Cart
+        fields = ['id', 'bouquets', 'total_price']
+
+class OrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = '__all__'
+        extra_kwargs = {
+            'user':{'read_only':True,}
+        }
+
+    def create(self, validated_data):
+        request = self.context.get('request')
+        total_price = self.context.get('total_price')
+        bouquets = validated_data.pop('bouquets')
+        validated_data['user'] = request.user
+        validated_data['total_price'] = total_price
+        order = Order.objects.create(**validated_data)
+        for bouquet in bouquets:
+            order.bouquets.add(bouquet)
+        return order
+    
+
+class BouquetsSerializer2(serializers.ModelSerializer):
+    # medical_test = MedicalTestSerializer(read_only=True, many=True)
+    class Meta:
+        model = Bouquet
+        fields = ['bouquet_name', 'price', 'image']
+
+class OrderSerializer2(serializers.ModelSerializer):
+    bouquets = BouquetsSerializer2(many=True)
+    class Meta:
+        model = Order
+        fields = '__all__'
+        extra_kwargs = {
+            'user':{'read_only':True,}
+        }
+
+class AnalysisSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Analysis
+        fields = ['medical_test', 'result', 'natural_value', 'evaluation', 'date']
+
+class ResultsAnalysisSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = ResultsAnalysis
+        fields = ['user']

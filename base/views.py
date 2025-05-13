@@ -19,6 +19,8 @@ class SignUpView(APIView):
         serializer.save()
         user_data = serializer.data
         user = CustomUser.objects.get(email=user_data['email'])
+        cart = Cart.objects.create(user=user)
+        user_data['id'] = user.pk
         code = generate_code()
         email_body = 'Hi '+user.username+' Use the code below to verify your email \n'+ str(code)
         data = {'email_body':email_body, 'to_email':user.email, 'email_subject':'Verify your email'}
@@ -191,3 +193,64 @@ class GetBouquetsView(RetrieveAPIView):
     permission_classes = [IsAuthenticated,]
     queryset = Bouquet.objects.all()
     serializer_class = BouquetsSerializer
+
+
+class ListCreateItemCart(APIView):
+
+    permission_classes = [IsAuthenticated,]
+    def post(self, request):
+        bouquet = Bouquet.objects.get(id=request.data['bouquet'])
+        cart = Cart.objects.get(user=request.user)
+        cart.bouquets.add(bouquet)
+
+        return Response(status=status.HTTP_200_OK)
+    
+    def get(self, request):
+        cart = Cart.objects.get(user=request.user)
+        data = CartSerializer(cart, many=False)
+
+        return Response(data.data, status=status.HTTP_302_FOUND)
+
+class DeleteItemFromCart(APIView):
+
+    permission_classes = [IsAuthenticated,]
+    def post(self, request, item_id):
+        cart = Cart.objects.get(user=request.user)
+        bouquet = Bouquet.objects.get(id=item_id)
+        cart.bouquets.remove(bouquet)
+
+        return Response(status=status.HTTP_200_OK)
+
+class ListCreateOrder(APIView):
+
+    permission_classes = [IsAuthenticated,]
+    def post(self, request):
+        data = request.data
+        cart = Cart.objects.get(user=request.user)
+        serializer = OrderSerializer(data=data, many=False, context={'request':request, 'total_price':cart.total_price})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        cart.bouquets.clear()
+        # cart.save()
+        return Response(status=status.HTTP_201_CREATED)
+
+    def get(self, request):
+        user = request.user
+        orders = user.order_set.all()
+        serializer = OrderSerializer2(orders, many=True)
+        return Response(serializer.data ,status=status.HTTP_302_FOUND)
+    
+class ListResultsAnalysis(APIView):
+    permission_classes = [IsAuthenticated,]
+
+    def get(self, request):
+        user = request.user
+        results_analysis = ResultsAnalysis.objects.get(user=user)
+        results = ResultsAnalysisSerializer(results_analysis)
+        medical_test = Analysis.objects.filter(resultsanalysis=results_analysis.id)
+        data = AnalysisSerializer(medical_test, many=True)
+        result_data = {
+            'analysis': results.data,
+            'medical_test' : data.data
+        }
+        return Response(result_data, status=status.HTTP_302_FOUND)

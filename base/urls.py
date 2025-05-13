@@ -17,5 +17,10 @@ urlpatterns = [
     path('list-create-bouquets/',ListCreateBouquetsView.as_view()),
     path('list-create-medical-tests/',ListCreateMedicalTestsView.as_view()),
     path('get-bouquet/<str:pk>/',GetBouquetsView.as_view()),
+    
+    path('list-create-item-cart/', ListCreateItemCart.as_view(), name='list_create_item_cart'),
+    path('delete-item-from-cart/<str:item_id>/', DeleteItemFromCart.as_view(), name='delete_item_from_cart'),
+    path('list-create-order/', ListCreateOrder.as_view(), name='list_create_order'),
+    path('list-results-analysis/', ListResultsAnalysis.as_view(), name='list_results_analysis'),
 
 ]    

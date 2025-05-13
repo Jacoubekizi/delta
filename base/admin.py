@@ -38,3 +38,8 @@ admin.site.register(CodeVerification)
 
 admin.site.register(MedicalTest)
 admin.site.register(Bouquet)
+
+admin.site.register(Cart)
+admin.site.register(Order)
+admin.site.register(Analysis)
+admin.site.register(ResultsAnalysis)
