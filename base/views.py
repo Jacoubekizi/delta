@@ -209,7 +209,7 @@ class ListCreateItemCart(APIView):
         cart = Cart.objects.get(user=request.user)
         data = CartSerializer(cart, many=False)
 
-        return Response(data.data, status=status.HTTP_302_FOUND)
+        return Response(data.data, status=status.HTTP_200_OK)
 
 class DeleteItemFromCart(APIView):
 
@@ -238,7 +238,7 @@ class ListCreateOrder(APIView):
         user = request.user
         orders = user.order_set.all()
         serializer = OrderSerializer2(orders, many=True)
-        return Response(serializer.data ,status=status.HTTP_302_FOUND)
+        return Response(serializer.data ,status=status.HTTP_200_OK)
     
 class ListResultsAnalysis(APIView):
     permission_classes = [IsAuthenticated,]
@@ -253,4 +253,4 @@ class ListResultsAnalysis(APIView):
             'analysis': results.data,
             'medical_test' : data.data
         }
-        return Response(result_data, status=status.HTTP_302_FOUND)
+        return Response(result_data, status=status.HTTP_200_OK)

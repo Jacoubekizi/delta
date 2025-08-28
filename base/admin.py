@@ -28,7 +28,7 @@ class AdminCustomUser(UserAdmin):
     add_fieldsets = (
         (None, {'classes':('wide',),
             'fields':(
-                'email' , 'username', 'password1', 'confpassword',
+                'email' , 'username', 'password1',
             ),}
             ),
     )
@@ -58,8 +58,9 @@ class AdminCart(admin.ModelAdmin):
 admin.site.register(Cart, AdminCart)
 
 class AdminOrder(admin.ModelAdmin):
-    list_display = ['user', 'full_name', 'gender', 'phonenumber', 'total_price']
+    list_display = ['user', 'full_name', 'gender', 'phonenumber', 'total_price', 'discount']
     search_fields = ['phonenumber', 'full_name']
+    list_filter = ['discount', 'is_accepted']
     list_per_page = 25
 
 admin.site.register(Order, AdminOrder)

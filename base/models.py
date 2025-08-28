@@ -1,4 +1,5 @@
 from django.db import models
+from decimal import Decimal
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
@@ -71,11 +72,27 @@ class Order(models.Model):
     birthdate = models.DateField()
     phonenumber = PhoneNumberField(region='SY')
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+    discount = models.BooleanField(default=False, max_length=25, null=True, blank=True)
+    type_discount = models.CharField(max_length=100, default='no discount', null=True, blank=True)
+    is_accepted = models.BooleanField(default=False, max_length=25, null=True, blank=True)
+    file_discount = models.FileField(upload_to='images/Discount', null=True, blank=True)
     bouquets = models.ManyToManyField(Bouquet)
 
     def __str__(self):
         return f'{self.id}'
     
+    def save(self, *args, **kwargs):
+        # super().save(*args, **kwargs)
+        if self.discount == True and self.is_accepted == True:
+            if self.type_discount == 'ذوي الإعاقة':
+                discount_amount = (self.total_price * 40)/100
+                self.total_price = self.total_price - discount_amount
+
+            elif self.type_discount == 'أيتام':
+                discount_amount = (self.total_price * 20)/100
+                self.total_price = self.total_price - discount_amount
+        
+        super().save(*args, **kwargs)
 
 
 class ResultsAnalysis(models.Model):
